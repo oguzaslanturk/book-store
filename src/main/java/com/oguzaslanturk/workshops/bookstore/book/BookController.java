@@ -14,10 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,5 +72,19 @@ public class BookController {
         return ResponseEntity.ok(bookService.getAll(bookSpec, pageable));
     }
 
+    @PostMapping("/")
+    public ResponseEntity<BookDto> save(@Valid BookDto bookDto) {
+        return ResponseEntity.ok(bookService.save(bookDto));
+    }
 
+    @PutMapping("/")
+    public ResponseEntity<BookDto> update(@Valid BookDto bookDto) {
+        return ResponseEntity.ok(bookService.update(bookDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
+        bookService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

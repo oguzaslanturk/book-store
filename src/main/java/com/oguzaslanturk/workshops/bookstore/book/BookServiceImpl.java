@@ -15,7 +15,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public BookServiceImpl(BookRepository bookRepository) {
@@ -25,7 +25,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto getById(Long id) {
         final Optional<Book> book = bookRepository.findById(id);
-        return book.isPresent() ? modelMapper.map(book.get(), BookDto.class) : null;
+        return book.map(value -> modelMapper.map(value, BookDto.class)).orElse(null);
     }
 
     public BookPageDto getAll(Specification<Book> spec, Pageable pageable) {
@@ -37,5 +37,25 @@ public class BookServiceImpl implements BookService {
                         .stream()
                         .map(book -> modelMapper.map(book, BookDto.class))
                         .collect(Collectors.toList()));
+    }
+
+    @Override
+    public BookDto save(BookDto bookData) {
+        Book book = modelMapper.map(bookData, Book.class);
+        bookRepository.save(book);
+        bookData.setId(book.getId());
+        return bookData;
+    }
+
+    @Override
+    public BookDto update(BookDto bookData) {
+        Book book = modelMapper.map(bookData, Book.class);
+        bookRepository.save(book);
+        return modelMapper.map(book, BookDto.class);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
     }
 }
