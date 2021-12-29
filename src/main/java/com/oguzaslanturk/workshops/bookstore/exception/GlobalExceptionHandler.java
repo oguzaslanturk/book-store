@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final Logger local_logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     public static final String ACCESS_DENIED = "Access denied!";
     public static final String INVALID_REQUEST = "Invalid request";
@@ -102,7 +102,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         final String errorsMessage = CollectionUtils.isNotEmpty(errors)
                 ? errors.stream().filter(StringUtils::isNotEmpty).collect(Collectors.joining(LIST_JOIN_DELIMITER))
                 : status.getReasonPhrase();
-        local_logger.error(ERRORS_FOR_PATH, errorsMessage, path);
+        log.error(ERRORS_FOR_PATH, errorsMessage, path);
         return new ResponseEntity<>(body, status);
     }
 
