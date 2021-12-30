@@ -90,6 +90,9 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
+        if (bookService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
         bookService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

@@ -248,5 +248,23 @@ public class BookControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void givenExistingId_whenDelete_thenSuccess() throws Exception {
+        Mockito.when(bookService.getById(BOOK1.getId())).thenReturn(BOOK1);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/books/" + BOOK1.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent());
+    }
+
+
+    @Test
+    public void givenNonExistingId_whenDelete_thenNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/books/11")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+    }
+
+
 
 }
