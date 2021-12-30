@@ -5,13 +5,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import net.kaczmarzyk.spring.data.jpa.domain.Equal;
-import net.kaczmarzyk.spring.data.jpa.domain.Like;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,9 +43,10 @@ public class BookController {
         return book != null ? ResponseEntity.ok(book) : ResponseEntity.notFound().build();
     }
 
+
+
     /*
         Use Spec API to handle dynamic filtering.
-     */
     @GetMapping(path = "/")
     @Operation(summary = "Returns a list of books sorted/filtered based on the query parameters.")
     @ApiResponses(value = {
@@ -71,14 +68,23 @@ public class BookController {
     ) {
         return ResponseEntity.ok(bookService.getAll(bookSpec, pageable));
     }
+     */
+
+    @GetMapping("/")
+    public ResponseEntity<BookPageDto> getAll(BookDto bookDto, Pageable pageable) {
+        return ResponseEntity.ok(bookService.getAll(bookDto, pageable));
+    }
 
     @PostMapping("/")
-    public ResponseEntity<BookDto> save(@Valid BookDto bookDto) {
-        return ResponseEntity.ok(bookService.save(bookDto));
+    public ResponseEntity<BookDto> save(@RequestBody @Valid BookDto bookDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.save(bookDto));
     }
 
     @PutMapping("/")
-    public ResponseEntity<BookDto> update(@Valid BookDto bookDto) {
+    public ResponseEntity<BookDto> update(@RequestBody @Valid BookDto bookDto) {
+        if (bookService.getById(bookDto.getId()) == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(bookService.update(bookDto));
     }
 

@@ -1,19 +1,20 @@
 package com.oguzaslanturk.workshops.bookstore.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BookDto {
-
-    @JsonProperty
     private Long id;
-
-    @JsonProperty(required = true)
     private String name;
-
-    @Size(min = 9, max = 13)
+    @Size(min = 11, max = 13)
     private String isbn;
 }

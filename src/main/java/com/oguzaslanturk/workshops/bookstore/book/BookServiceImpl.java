@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -30,6 +31,20 @@ public class BookServiceImpl implements BookService {
 
     public BookPageDto getAll(Specification<Book> spec, Pageable pageable) {
         final Page<Book> pageOfBooks = bookRepository.findAll(spec, pageable);
+        return new BookPageDto(pageable.getPageNumber(),
+                pageOfBooks.getTotalPages(),
+                pageOfBooks.getTotalElements(),
+                pageOfBooks.getContent()
+                        .stream()
+                        .map(book -> modelMapper.map(book, BookDto.class))
+                        .collect(Collectors.toList()));
+    }
+
+    @Override
+    public BookPageDto getAll(BookDto searchData, Pageable pageable) {
+        final Page<Book> pageOfBooks = bookRepository.findAll(
+                BookSpecification.isNameContains(searchData.getName())
+                        .and(BookSpecification.hasIsbn(searchData.getIsbn())), pageable);
         return new BookPageDto(pageable.getPageNumber(),
                 pageOfBooks.getTotalPages(),
                 pageOfBooks.getTotalElements(),
