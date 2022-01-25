@@ -1,3 +1,3 @@
 # book-store
-Book Store is a workshop for Spring Boot, Spring Data JPA and REST APIs.
+Book Store is a repository for workshop applications for various technologies. 
 
